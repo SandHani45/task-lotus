@@ -2,8 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
@@ -11,10 +9,9 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+// componenets
+import CollapseItem from './CollapseItem'
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -35,17 +32,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const CollapseCard = (props) => {
+const CollapseCard = ({list}) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
   return (
     <Card >
       <CardActions disableSpacing className={classes.card}>
-      <Typography h4>{props.name}</Typography>
+      <Typography h4>{list.first_name + ' ' + list.last_name}</Typography>
         <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
@@ -59,19 +55,15 @@ const CollapseCard = (props) => {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-        <Typography paragraph>{props.name }</Typography>
+          <CollapseItem item = {list}/>
           <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-            minutes.
+           Relationships:
           </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-            heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-            browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving chicken
-            and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion, salt and
-            pepper, and cook, stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
+          <div style={{display: 'flex' ,justifyContent: 'space-between'}}>
+            {list.relationships.map(item=>(
+              <CollapseItem item = {item}/>
+            ))}
+          </div>
         </CardContent>
       </Collapse>
     </Card>

@@ -1,72 +1,50 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { green } from '@material-ui/core/colors';
+import React, {Component} from 'react';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-export default function FilterCheckBoxList() {
-  const [state, setState] = React.useState({
-    checkedA: true,
-    checkedB: true,
-    checkedF: true,
-    checkedG: true,
-  });
+export default class FilterCheckBoxList extends Component {
+    state = {
+      checked: []
+    }
+    // handleToggle function for renderList
+      handleToggle = value => () => {
+        const { checked } = this.state;
+        const currentIndex = checked.indexOf(value);
+        const newChecked = [...checked];
 
-  const handleChange = name => event => {
-    setState({ ...state, [name]: event.target.checked });
-  };
+        if(currentIndex === -1){
+            newChecked.push(value)
+        } else{
+            newChecked.splice(currentIndex,1)
+        }
 
-  return (
-    <FormGroup row>
-      <FormControlLabel
-        control={
-          <Checkbox checked={state.checkedA} onChange={handleChange('checkedA')} value="checkedA" />
-        }
-        label="Cooking"
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={state.checkedB}
-            onChange={handleChange('checkedB')}
-            value="checkedB"
-            color="primary"
+        this.setState({
+            checked: newChecked
+        },()=>{
+            this.props.handleFilters(newChecked)
+        })
+
+      } 
+  // renderList function
+  renderList = () => (
+    this.props.list ?
+        this.props.list.map((value)=>(
+            <FormControlLabel key={value.toString()}
+            control={
+              <Checkbox onChange={this.handleToggle(value)} checked={this.state.checked.indexOf(value) !== -1} />
+            }
+            label={value}
           />
-        }
-        label="Baseball"
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={state.checkedF}
-            onChange={handleChange('checkedF')}
-            value="checkedF"
-            indeterminate
-          />
-        }
-        label="Reading"
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={state.checkedG}
-            onChange={handleChange('checkedG')}
-            value="checkedG"
-          />
-        }
-        label="Hunting"
-      />
-      <FormControlLabel
-        control={
-            <Checkbox
-            checked={state.checkedG}
-            onChange={handleChange('checkedG')}
-            value="checkedG"
-          />
-          }
-        label="Fishing"
-      />
-    </FormGroup>
-  );
+        ))
+    :null
+  )
+
+  render(){
+    return (
+      <FormGroup row>
+        {this.renderList()}
+      </FormGroup>
+    );
+  }
 }
